@@ -14,48 +14,53 @@ import detectron2.data.transforms as T
 from detectron2.engine.defaults import DefaultPredictor
 from detectron2.utils.video_visualizer import VideoVisualizer
 from detectron2.utils.visualizer import ColorMode
+
 try:
     from visualizer import CustomVisualizer
 except:
     from .visualizer import CustomVisualizer
 
 
-def get_clip_embeddings(vocabulary, prompt='a '):
+def get_clip_embeddings(vocabulary, prompt="a "):
     from vlpart.modeling.text_encoder.text_encoder import build_text_encoder
+
     text_encoder = build_text_encoder(pretrain=True)
     text_encoder.eval()
-    texts = [prompt + x.lower().replace(':', ' ') for x in vocabulary]
+    texts = [prompt + x.lower().replace(":", " ") for x in vocabulary]
     emb = text_encoder(texts).detach().permute(1, 0).contiguous().cpu()
     return emb
 
+
 BUILDIN_CLASSIFIER = {
-    'pascal_part': 'datasets/metadata/pascal_part_clip_RN50_a+cname.npy',
-    'partimagenet': 'datasets/metadata/partimagenet_clip_RN50_a+cname.npy',
-    'paco': 'datasets/metadata/paco_clip_RN50_a+cname.npy',
-    'lvis': 'datasets/metadata/lvis_v1_clip_RN50_a+cname.npy',
-    'coco': 'datasets/metadata/coco_clip_RN50_a+cname.npy',
-    'voc': 'datasets/metadata/voc_clip_RN50_a+cname.npy',
+    "pascal_part": "datasets/metadata/pascal_part_clip_RN50_a+cname.npy",
+    "partimagenet": "datasets/metadata/partimagenet_clip_RN50_a+cname.npy",
+    "paco": "datasets/metadata/paco_clip_RN50_a+cname.npy",
+    "lvis": "datasets/metadata/lvis_v1_clip_RN50_a+cname.npy",
+    "coco": "datasets/metadata/coco_clip_RN50_a+cname.npy",
+    "voc": "datasets/metadata/voc_clip_RN50_a+cname.npy",
 }
 
 BUILDIN_METADATA_PATH = {
-    'pascal_part': 'pascal_part_val',
-    'partimagenet': 'partimagenet_val',
-    'paco': 'paco_lvis_v1_val',
-    'lvis': 'lvis_v1_val',
-    'coco': 'coco_2017_val',
-    'voc': 'voc_2007_val',
+    "pascal_part": "pascal_part_val",
+    "partimagenet": "partimagenet_val",
+    "paco": "paco_lvis_v1_val",
+    "lvis": "lvis_v1_val",
+    "coco": "coco_2017_val",
+    "voc": "voc_2007_val",
 }
+
 
 def reset_cls_test(model, cls_path):
     # model.roi_heads.num_classes = num_classes
     if type(cls_path) == str:
-        print('Resetting zs_weight', cls_path)
-        if cls_path.endswith('npy'):
+        print("Resetting zs_weight", cls_path)
+        if cls_path.endswith("npy"):
             zs_weight = np.load(cls_path)
-            zs_weight = torch.tensor(
-                zs_weight, dtype=torch.float32).permute(1, 0).contiguous()  # dim x C
-        elif cls_path.endswith('pth'):
-            zs_weight = torch.load(cls_path, map_location='cpu')
+            zs_weight = (
+                torch.tensor(zs_weight, dtype=torch.float32).permute(1, 0).contiguous()
+            )  # dim x C
+        elif cls_path.endswith("pth"):
+            zs_weight = torch.load(cls_path, map_location="cpu")
             zs_weight = zs_weight.clone().detach().permute(1, 0).contiguous()  # dim x C
         else:
             raise NotImplementedError
@@ -65,8 +70,8 @@ def reset_cls_test(model, cls_path):
     else:
         zs_weight = cls_path
     zs_weight = torch.cat(
-        [zs_weight, zs_weight.new_zeros((zs_weight.shape[0], 1))],
-        dim=1) # D x (C + 1)
+        [zs_weight, zs_weight.new_zeros((zs_weight.shape[0], 1))], dim=1
+    )  # D x (C + 1)
     # if model.roi_heads.box_predictor[0].cls_score.norm_weight:
     #     zs_weight = F.normalize(zs_weight, p=2, dim=0)
     # zs_weight = zs_weight.to(model.device)
@@ -96,28 +101,28 @@ class VisualizationDemo(object):
         #     cfg.DATASETS.TEST[0] if len(cfg.DATASETS.TEST) else "__unused"
         # )
         if args is None:
-            self.metadata = MetadataCatalog.get(
-                BUILDIN_METADATA_PATH['pascal_part'])
-            classifier = BUILDIN_CLASSIFIER['pascal_part']
-        elif args.vocabulary == 'custom':
+            self.metadata = MetadataCatalog.get(BUILDIN_METADATA_PATH["pascal_part"])
+            classifier = BUILDIN_CLASSIFIER["pascal_part"]
+        elif args.vocabulary == "custom":
             self.metadata = MetadataCatalog.get("__unused")
-            self.metadata.thing_classes = args.custom_vocabulary.split(',')
+            self.metadata.thing_classes = args.custom_vocabulary.split(",")
             classifier = get_clip_embeddings(self.metadata.thing_classes)
-        elif args.vocabulary == 'pascal_part_voc':
+        elif args.vocabulary == "pascal_part_voc":
             self.metadata = MetadataCatalog.get("__unused")
-            self.metadata.thing_classes = args.custom_vocabulary.split(',')
+            self.metadata.thing_classes = args.custom_vocabulary.split(",")
             classifier = get_clip_embeddings(self.metadata.thing_classes)
-        elif args.vocabulary == 'lvis_paco':
+        elif args.vocabulary == "lvis_paco":
             self.metadata = MetadataCatalog.get("__unused")
             lvis_thing_classes = MetadataCatalog.get(
-                BUILDIN_METADATA_PATH['lvis']).thing_classes
+                BUILDIN_METADATA_PATH["lvis"]
+            ).thing_classes
             paco_thing_classes = MetadataCatalog.get(
-                BUILDIN_METADATA_PATH['paco']).thing_classes[75:]
+                BUILDIN_METADATA_PATH["paco"]
+            ).thing_classes[75:]
             self.metadata.thing_classes = lvis_thing_classes + paco_thing_classes
             classifier = get_clip_embeddings(self.metadata.thing_classes)
         else:
-            self.metadata = MetadataCatalog.get(
-                BUILDIN_METADATA_PATH[args.vocabulary])
+            self.metadata = MetadataCatalog.get(BUILDIN_METADATA_PATH[args.vocabulary])
             classifier = BUILDIN_CLASSIFIER[args.vocabulary]
 
         self.cpu_device = torch.device("cpu")
@@ -146,7 +151,9 @@ class VisualizationDemo(object):
         predictions = self.predictor(image)
         # Convert image from OpenCV BGR format to Matplotlib RGB format.
         image = image[:, :, ::-1]
-        visualizer = CustomVisualizer(image, self.metadata, instance_mode=self.instance_mode)
+        visualizer = CustomVisualizer(
+            image, self.metadata, instance_mode=self.instance_mode
+        )
         if "panoptic_seg" in predictions:
             panoptic_seg, segments_info = predictions["panoptic_seg"]
             vis_output = visualizer.draw_panoptic_seg_predictions(
@@ -159,7 +166,9 @@ class VisualizationDemo(object):
                 )
             if "instances" in predictions:
                 instances = predictions["instances"].to(self.cpu_device)
-                vis_output = visualizer.draw_instance_predictions(predictions=instances, args=self.cfg)
+                vis_output = visualizer.draw_instance_predictions(
+                    predictions=instances, args=self.cfg
+                )
 
         return predictions, vis_output
 
@@ -193,7 +202,9 @@ class VisualizationDemo(object):
                 )
             elif "instances" in predictions:
                 predictions = predictions["instances"].to(self.cpu_device)
-                vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
+                vis_frame = video_visualizer.draw_instance_predictions(
+                    frame, predictions
+                )
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
                     frame, predictions["sem_seg"].argmax(dim=0).to(self.cpu_device)
@@ -316,3 +327,53 @@ class AsyncPredictor:
     @property
     def default_buffer_size(self):
         return len(self.procs) * 5
+
+
+class PairVisualizationDemo(VisualizationDemo):
+    def __init__(self, cfg, args=None, instance_mode=ColorMode.IMAGE, parallel=False):
+        """
+        Args:
+            cfg (CfgNode):
+            instance_mode (ColorMode):
+            parallel (bool): whether to run the model in different processes from visualization.
+                Useful since the visualization logic can be slow.
+        """
+        # self.metadata = MetadataCatalog.get(
+        #     cfg.DATASETS.TEST[0] if len(cfg.DATASETS.TEST) else "__unused"
+        # )
+        super().__init__(cfg, args, instance_mode, parallel)
+
+    def run_on_image(self, image):
+        """
+        Args:
+            image (np.ndarray): an image of shape (H, W, C) (in BGR order).
+                This is the format used by OpenCV.
+
+        Returns:
+            predictions (dict): the output of the model.
+            vis_output (VisImage): the visualized image output.
+        """
+        vis_output = None
+        predictions = self.predictor(image)
+        # Convert image from OpenCV BGR format to Matplotlib RGB format.
+        image = image[:, :, ::-1]
+        visualizer = CustomVisualizer(
+            image, self.metadata, instance_mode=self.instance_mode
+        )
+        if "panoptic_seg" in predictions:
+            panoptic_seg, segments_info = predictions["panoptic_seg"]
+            vis_output = visualizer.draw_panoptic_seg_predictions(
+                panoptic_seg.to(self.cpu_device), segments_info
+            )
+        else:
+            if "sem_seg" in predictions:
+                vis_output = visualizer.draw_sem_seg(
+                    predictions["sem_seg"].argmax(dim=0).to(self.cpu_device)
+                )
+            if "instances" in predictions:
+                instances = predictions["instances"].to(self.cpu_device)
+                vis_output = visualizer.draw_instance_predictions(
+                    predictions=instances, args=self.cfg
+                )
+
+        return predictions, vis_output
