@@ -60,17 +60,17 @@ def get_parser():
     #     "--webcam", action="store_true", help="Take inputs from webcam."
     # )
     # parser.add_argument("--video-input", help="Path to video file.")
-    parser.add_argument(
-        "--input",
-        nargs="+",
-        help="A list of space separated input images; "
-        "or a single glob pattern such as 'directory/*.jpg'",
-    )
-    parser.add_argument(
-        "--output",
-        help="A file or directory to save output visualizations. "
-        "If not given, will show output in an OpenCV window.",
-    )
+    # parser.add_argument(
+    #     "--input",
+    #     nargs="+",
+    #     help="A list of space separated input images; "
+    #     "or a single glob pattern such as 'directory/*.jpg'",
+    # )
+    # parser.add_argument(
+    #     "--output",
+    #     help="A file or directory to save output visualizations. "
+    #     "If not given, will show output in an OpenCV window.",
+    # )
     parser.add_argument(
         "--vocabulary",
         default="pascal_part",
@@ -126,7 +126,7 @@ def test_opencv_video_format(codec, file_ext):
 
 
 if __name__ == "__main__":
-    with open(Path(__file__) / "pair_cfg.yaml") as f:
+    with open(Path(__file__).parent / "pair_cfg.yaml") as f:
         paths = yaml.safe_load(f)
 
     json_annotation_val = paths.json_annotation_val_path
