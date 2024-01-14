@@ -126,12 +126,12 @@ def test_opencv_video_format(codec, file_ext):
 
 
 if __name__ == "__main__":
-    with open(Path(__file__).parent / "pair_cfg.yaml") as f:
-        paths = yaml.safe_load(f)
+    # with open(Path(__file__).parent / "pair_cfg.yaml") as f:
+    #     paths = yaml.safe_load(f)
 
-    json_annotation_val = paths["json_annotation_val_path"]
-    imgs_dir = paths["imgs_dir"]
-    register_coco_instances("paco_pair_val", {}, json_annotation_val, imgs_dir)
+    # json_annotation_val = paths["json_annotation_val_path"]
+    # imgs_dir = paths["imgs_dir"]
+    # register_coco_instances("paco_pair_val", {}, json_annotation_val, imgs_dir)
 
     mp.set_start_method("spawn", force=True)
     args = get_parser().parse_args()
@@ -180,10 +180,6 @@ if __name__ == "__main__":
             #     cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
             #     if cv2.waitKey(0) == 27:
             #         break  # esc to quit
-
-    evaluator = COCOEvaluator("paco_pair_val", output_dir="./output")
-    val_loader = build_detection_test_loader(cfg, "paco_pair_val")
-    print(inference_on_dataset(demo.predictor.model, val_loader, evaluator))
 
     # elif args.webcam:
     #     assert args.input is None, "Cannot have both --input and --webcam!"
