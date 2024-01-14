@@ -60,12 +60,12 @@ def get_parser():
     #     "--webcam", action="store_true", help="Take inputs from webcam."
     # )
     # parser.add_argument("--video-input", help="Path to video file.")
-    # parser.add_argument(
-    #     "--input",
-    #     nargs="+",
-    #     help="A list of space separated input images; "
-    #     "or a single glob pattern such as 'directory/*.jpg'",
-    # )
+    parser.add_argument(
+        "--input",
+        nargs="+",
+        help="A list of space separated input images; "
+        "or a single glob pattern such as 'directory/*.jpg'",
+    )
     parser.add_argument(
         "--output",
         help="A file or directory to save output visualizations. "
@@ -145,7 +145,6 @@ if __name__ == "__main__":
     if args.output:
         os.makedirs(args.output, exist_ok=True)
 
-    args.input = imgs_dir
     if args.input:
         # if len(args.input) == 1:
         #     args.input = glob.glob(os.path.expanduser(args.input[0]))
