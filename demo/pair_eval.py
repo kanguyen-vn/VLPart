@@ -66,11 +66,11 @@ def get_parser():
     #     help="A list of space separated input images; "
     #     "or a single glob pattern such as 'directory/*.jpg'",
     # )
-    # parser.add_argument(
-    #     "--output",
-    #     help="A file or directory to save output visualizations. "
-    #     "If not given, will show output in an OpenCV window.",
-    # )
+    parser.add_argument(
+        "--output",
+        help="A file or directory to save output visualizations. "
+        "If not given, will show output in an OpenCV window.",
+    )
     parser.add_argument(
         "--vocabulary",
         default="pascal_part",
