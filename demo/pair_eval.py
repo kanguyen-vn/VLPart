@@ -129,8 +129,8 @@ if __name__ == "__main__":
     with open(Path(__file__).parent / "pair_cfg.yaml") as f:
         paths = yaml.safe_load(f)
 
-    json_annotation_val = paths.json_annotation_val_path
-    imgs_dir = paths.imgs_dir
+    json_annotation_val = paths["json_annotation_val_path"]
+    imgs_dir = paths["imgs_dir"]
     register_coco_instances("paco_pair_val", {}, json_annotation_val, imgs_dir)
 
     mp.set_start_method("spawn", force=True)
