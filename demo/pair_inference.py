@@ -24,6 +24,8 @@ from detectron2.data import build_detection_test_loader
 
 import sys
 
+from vlpart.evaluation.paco_evaluation import PACOEvaluator
+
 sys.path.append(".")
 from vlpart.config import add_vlpart_config
 
@@ -134,6 +136,9 @@ if __name__ == "__main__":
     cfg = setup_cfg(args)
     demo = PairVisualizationDemo(cfg, args)
 
-    evaluator = COCOEvaluator("paco_pair_val", output_dir="./output")
+    # evaluator = COCOEvaluator("paco_pair_val", output_dir="./output")
+    evaluator = PACOEvaluator(
+        "paco_pair_val", cfg, True, "./output", cfg.MODEL.EVAL_ATTR, cfg.MODEL.EVAL_PER
+    )
     val_loader = build_detection_test_loader(cfg, "paco_pair_val")
     print(inference_on_dataset(demo.predictor.model, val_loader, evaluator))
