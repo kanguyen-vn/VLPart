@@ -44,6 +44,8 @@ def setup_cfg(args):
     cfg.MODEL.PANOPTIC_FPN.COMBINE.INSTANCES_CONFIDENCE_THRESH = (
         args.confidence_threshold
     )
+
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 530
     cfg.freeze()
     return cfg
 
