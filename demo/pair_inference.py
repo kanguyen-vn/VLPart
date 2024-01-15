@@ -13,6 +13,7 @@ import time
 import warnings
 import cv2
 import tqdm
+import json
 
 from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
@@ -123,6 +124,12 @@ if __name__ == "__main__":
     setup_logger(name="fvcore")
     logger = setup_logger()
     logger.info("Arguments: " + str(args))
+
+    vocab_path = paths["vocab_path"]
+    with open(vocab_path) as f:
+        vocab = json.load(f)
+
+    args.custom_vocabulary = ",".join(vocab)
 
     cfg = setup_cfg(args)
     demo = PairVisualizationDemo(cfg, args)
