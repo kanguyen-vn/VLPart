@@ -15,6 +15,8 @@ import cv2
 import tqdm
 import json
 
+import torch
+
 from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
 from detectron2.utils.logger import setup_logger
@@ -202,8 +204,7 @@ if __name__ == "__main__":
             #         break  # esc to quit
 
     if args.output and os.path.isdir(args.output):
-        with open(os.path.join(args.output, "all_predictions.json"), "w") as f:
-            json.dump(all_predictions, f)
+        torch.save(os.path.join(all_predictions, args.output, "all_predictions.json"))
 
     # elif args.webcam:
     #     assert args.input is None, "Cannot have both --input and --webcam!"
