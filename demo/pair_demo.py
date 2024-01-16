@@ -204,7 +204,7 @@ if __name__ == "__main__":
             #         break  # esc to quit
 
     if args.output and os.path.isdir(args.output):
-        torch.save(os.path.join(all_predictions, args.output, "all_predictions.json"))
+        torch.save(all_predictions, os.path.join(args.output, "all_predictions.json"))
 
     # elif args.webcam:
     #     assert args.input is None, "Cannot have both --input and --webcam!"
