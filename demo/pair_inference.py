@@ -135,7 +135,7 @@ if __name__ == "__main__":
     cfg = setup_cfg(args)
     demo = PairVisualizationDemo(cfg, args)
 
-    # evaluator = COCOEvaluator("paco_pair_val", output_dir="./output")
-    evaluator = PACOEvaluator("paco_pair_val", cfg, True, "./output", False, False)
+    evaluator = COCOEvaluator("paco_pair_val", output_dir="./output_coco")
+    # evaluator = PACOEvaluator("paco_pair_val", cfg, True, "./output", False, False)
     val_loader = build_detection_test_loader(cfg, "paco_pair_val")
     print(inference_on_dataset(demo.predictor.model, val_loader, evaluator))
