@@ -48,7 +48,7 @@ def setup_cfg(args):
         args.confidence_threshold
     )
 
-    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 530
+    # cfg.MODEL.ROI_HEADS.NUM_CLASSES = 530
     cfg.freeze()
     return cfg
 
@@ -137,8 +137,6 @@ if __name__ == "__main__":
     demo = PairVisualizationDemo(cfg, args)
 
     # evaluator = COCOEvaluator("paco_pair_val", output_dir="./output")
-    evaluator = PACOEvaluator(
-        "paco_pair_val", cfg, True, "./output", cfg.MODEL.EVAL_ATTR, cfg.MODEL.EVAL_PER
-    )
+    evaluator = PACOEvaluator("paco_pair_val", cfg, True, "./output", False, False)
     val_loader = build_detection_test_loader(cfg, "paco_pair_val")
     print(inference_on_dataset(demo.predictor.model, val_loader, evaluator))
