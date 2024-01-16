@@ -169,7 +169,7 @@ if __name__ == "__main__":
             # use PIL, to be consistent with evaluation
             img = read_image(path, format="BGR")
             start_time = time.time()
-            predictions, visualized_output = demo.run_on_image(img)
+            predictions, visualized_output, instances = demo.run_on_image(img)
             logger.info(
                 "{}: {} in {:.2f}s".format(
                     path,
@@ -184,7 +184,7 @@ if __name__ == "__main__":
                 {
                     "file_name": "/".join(path.split("/")[-2:]),
                     "predictions": predictions,
-                    "labels": demo.get_labels(predictions),
+                    "labels": demo.get_labels(instances),
                 }
             )
 

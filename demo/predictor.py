@@ -375,8 +375,9 @@ class PairVisualizationDemo(VisualizationDemo):
                 vis_output = visualizer.draw_instance_predictions(
                     predictions=instances, args=self.cfg
                 )
+                return predictions, vis_output, instances
 
-        return predictions, vis_output
+        return predictions, vis_output, None
 
     def get_labels(self, predictions):
         scores = predictions.scores if predictions.has("scores") else None
