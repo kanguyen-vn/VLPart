@@ -24,10 +24,9 @@ from detectron2.data import build_detection_test_loader
 
 import sys
 
-from vlpart.evaluation.paco_evaluation import PACOEvaluator
-
 sys.path.append(".")
 from vlpart.config import add_vlpart_config
+from vlpart.evaluation.paco_evaluation import PACOEvaluator
 
 from predictor import PairVisualizationDemo
 
