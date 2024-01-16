@@ -143,11 +143,12 @@ if __name__ == "__main__":
     logger = setup_logger()
     logger.info("Arguments: " + str(args))
 
-    vocab_path = paths["vocab_path"]
-    with open(vocab_path) as f:
-        vocab = json.load(f)
+    if args.vocabulary == "custom":
+        vocab_path = paths["vocab_path"]
+        with open(vocab_path) as f:
+            vocab = json.load(f)
 
-    args.custom_vocabulary = ",".join(vocab)
+        args.custom_vocabulary = ",".join(vocab)
 
     cfg = setup_cfg(args)
     demo = PairVisualizationDemo(cfg, args)
