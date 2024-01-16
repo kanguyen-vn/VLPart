@@ -155,6 +155,8 @@ if __name__ == "__main__":
     if args.output:
         os.makedirs(args.output, exist_ok=True)
 
+    all_predictions = []
+
     if args.input:
         if len(args.input) == 1:
             args.input = glob.glob(os.path.expanduser(args.input[0]))
@@ -175,6 +177,13 @@ if __name__ == "__main__":
                 )
             )
 
+            all_predictions.append(
+                {
+                    "file_name": "/".join(path.split("/")[-2:]),
+                    "predictions": predictions,
+                }
+            )
+
             if args.output:
                 if os.path.isdir(args.output):
                     assert os.path.isdir(args.output), args.output
@@ -190,6 +199,10 @@ if __name__ == "__main__":
             #     cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
             #     if cv2.waitKey(0) == 27:
             #         break  # esc to quit
+
+    if args.output and os.path.isdir(args.output):
+        with open(os.path.join(args.output, "all_predictions.json"), "w") as f:
+            json.dump(all_predictions, f)
 
     # elif args.webcam:
     #     assert args.input is None, "Cannot have both --input and --webcam!"
