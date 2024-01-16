@@ -377,3 +377,27 @@ class PairVisualizationDemo(VisualizationDemo):
                 )
 
         return predictions, vis_output
+
+    def get_labels(self, predictions):
+        scores = predictions.scores if predictions.has("scores") else None
+        classes = (
+            predictions.pred_classes.tolist()
+            if predictions.has("pred_classes")
+            else None
+        )
+        class_names = self.metadata.get("thing_classes", None)
+
+        labels = None
+        if classes is not None:
+            if class_names is not None and len(class_names) > 0:
+                labels = [class_names[i] for i in classes]
+            else:
+                labels = [str(i) for i in classes]
+        if scores is not None:
+            if labels is None:
+                labels = ["{:.0f}%".format(s * 100) for s in scores]
+            else:
+                labels = [
+                    "{} {:.0f}%".format(l, s * 100) for l, s in zip(labels, scores)
+                ]
+        return labels

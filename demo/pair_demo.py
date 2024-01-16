@@ -184,6 +184,7 @@ if __name__ == "__main__":
                 {
                     "file_name": "/".join(path.split("/")[-2:]),
                     "predictions": predictions,
+                    "labels": demo.get_labels(predictions),
                 }
             )
 
@@ -204,7 +205,7 @@ if __name__ == "__main__":
             #         break  # esc to quit
 
     if args.output and os.path.isdir(args.output):
-        torch.save(all_predictions, os.path.join(args.output, "all_predictions.json"))
+        torch.save(all_predictions, os.path.join(args.output, "all_predictions.pth"))
 
     # elif args.webcam:
     #     assert args.input is None, "Cannot have both --input and --webcam!"
